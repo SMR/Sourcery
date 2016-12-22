@@ -1,0 +1,16 @@
+{% for type in types.classes %} {% if type.storedVariables.count %}
+
+extension {{ type.name }} {
+    {% if type.based.Type %} override {% endif %}func diffAgainst(_ object: Any?) -> DiffableResult {
+        var results = DiffableResult()
+        guard let rhs = object as? {{ type.name }} else {
+          results.append("Incorrect type, expected {{ type.name }}, received: \(type(of: object))")
+          return results
+        }
+        {% for variable in type.storedVariables %}{% if not variable.annotations.skipEquality %}if self.{{ variable.name }} != rhs.{{ variable.name }} { results.append("Incorrect {{ variable.name }}, expected \(self.{{variable.name}}), received: \(rhs.{{variable.name}})") }
+        {% endif %}{% endfor %}
+        {% if type.based.Type %}results.append(contentsOf: super.diffAgainst(object)) {% endif %}
+        return results
+    }
+}
+{% endif %}{% endfor %}

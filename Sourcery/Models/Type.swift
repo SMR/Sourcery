@@ -6,7 +6,7 @@
 import Foundation
 
 /// Defines Swift Type
-class Type: NSObject {
+class Type: NSObject, Diffable {
 
     /// All local typealiases
     var typealiases: [String: Typealias] {
